@@ -4,5 +4,6 @@ import type { SignupRequest, SignupResponse } from "../../signup/types/signup.ty
 export interface IAuthRepository {
   login(request: LoginRequest): Promise<LoginResponse>;
   register(request: SignupRequest): Promise<SignupResponse>;
+  loginWithGoogle(): Promise<LoginResponse>;
   logout(): Promise<void>;
 }

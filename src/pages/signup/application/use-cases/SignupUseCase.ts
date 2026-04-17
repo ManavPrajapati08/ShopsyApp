@@ -20,7 +20,14 @@ export class SignupUseCase {
       this.toasterService.success(response.message);
       return response;
     } catch (error: any) {
-      const errorMessage = error.message || "Registration failed. Please try again.";
+      let errorMessage = "Registration failed. Please try again.";
+      
+      if (error.code === "auth/email-already-in-use") {
+        errorMessage = "This email is already registered. Please use a different email or login.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       this.toasterService.error(errorMessage);
       throw error;
     }

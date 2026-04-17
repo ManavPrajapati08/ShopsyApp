@@ -2,7 +2,9 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut, 
-  updateProfile 
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "firebase/auth";
 import { auth } from "@/firebase/firebase-config";
 import type { IAuthRepository } from "../interfaces/IAuthRepository";
@@ -11,6 +13,8 @@ import type { SignupRequest, SignupResponse } from "../../signup/types/signup.ty
 import type { User } from "@/shared/types/user.types";
 
 export class AuthRepositoryImpl implements IAuthRepository {
+  private readonly googleProvider = new GoogleAuthProvider();
+
   private mapFirebaseUser(firebaseUser: any): User {
     return {
       uid: firebaseUser.uid,
@@ -30,6 +34,15 @@ export class AuthRepositoryImpl implements IAuthRepository {
     return {
       user: this.mapFirebaseUser(userCredential.user),
       message: "Login successful",
+    };
+  }
+
+  async loginWithGoogle(): Promise<LoginResponse> {
+    const userCredential = await signInWithPopup(auth, this.googleProvider);
+    
+    return {
+      user: this.mapFirebaseUser(userCredential.user),
+      message: "Google login successful",
     };
   }
 

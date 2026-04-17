@@ -12,6 +12,8 @@ import AppLayout from "@/shared/components/templates/AppLayout";
 import AuthLayout from "@/shared/components/templates/AuthLayout";
 import { ThemeProvider } from "@/shared/provider/ThemeProvider.tsx";
 import { store } from "./store";
+import ProtectedRoute from "@/shared/components/guards/ProtectedRoute";
+import PublicRoute from "@/shared/components/guards/PublicRoute";
 
 const router = createBrowserRouter([
   {
@@ -19,24 +21,34 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        element: <AppLayout />,
+        element: <ProtectedRoute />,
         children: [
           {
-            index: true,
-            element: <HomePage />,
+            element: <AppLayout />,
+            children: [
+              {
+                index: true,
+                element: <HomePage />,
+              },
+            ],
           },
         ],
       },
       {
-        element: <AuthLayout />,
+        element: <PublicRoute />,
         children: [
           {
-            path: "login",
-            element: <LoginPage />,
-          },
-          {
-            path: "signup",
-            element: <SignupPage />,
+            element: <AuthLayout />,
+            children: [
+              {
+                path: "login",
+                element: <LoginPage />,
+              },
+              {
+                path: "signup",
+                element: <SignupPage />,
+              },
+            ],
           },
         ],
       },
