@@ -10,7 +10,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <InputShadcn
         type={type}
         className={cn(
-          "focus-visible:ring-primary transition-all duration-200",
+          "focus-visible:ring-primary transition-all duration-200 h-12",
           className
         )}
         ref={ref}

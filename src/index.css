@@ -178,4 +178,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  ::selection {
+    @apply bg-primary/30 text-foreground;
+  }
+  ::-moz-selection {
+    @apply bg-primary/30 text-foreground;
+  }
 }

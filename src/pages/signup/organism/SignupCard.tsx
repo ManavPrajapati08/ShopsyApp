@@ -13,6 +13,8 @@ import { Form, FormField } from "@/shared/components/atoms/form";
 import Button from "@/shared/components/atoms/button";
 import TextField from "../molecules/TextField";
 import Typography from "@/shared/components/atoms/Typography";
+import { useSignup } from "../hooks/useSignup/useSignup";
+import { Link } from "react-router-dom";
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -27,6 +29,8 @@ const signupSchema = z.object({
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 const SignupCard = () => {
+  const { signup, isSubmitting } = useSignup();
+
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -37,14 +41,13 @@ const SignupCard = () => {
     },
   });
 
-  const onSubmit = (values: SignupFormValues) => {
-    console.log("Signup Values:", values);
-    // Handle signup logic here
+  const onSubmit = async (values: SignupFormValues) => {
+    await signup(values);
   };
 
   return (
     <Card className="w-full max-w-md border-border/40 bg-background/60 backdrop-blur-xl shadow-2xl animate-in fade-in zoom-in-95 duration-500">
-      <CardHeader className="space-y-1">
+      <CardHeader>
         <CardTitle className="text-3xl font-bold tracking-tight text-center">
           Create an account
         </CardTitle>
@@ -62,6 +65,7 @@ const SignupCard = () => {
                 <TextField
                   label="Full Name"
                   placeholder="John Doe"
+                  disabled={isSubmitting}
                   error={form.formState.errors.name?.message}
                   {...field}
                 />
@@ -75,6 +79,7 @@ const SignupCard = () => {
                   label="Email"
                   placeholder="name@example.com"
                   type="email"
+                  disabled={isSubmitting}
                   error={form.formState.errors.email?.message}
                   {...field}
                 />
@@ -88,6 +93,7 @@ const SignupCard = () => {
                   label="Password"
                   placeholder="••••••••"
                   type="password"
+                  disabled={isSubmitting}
                   error={form.formState.errors.password?.message}
                   {...field}
                 />
@@ -101,13 +107,18 @@ const SignupCard = () => {
                   label="Confirm Password"
                   placeholder="••••••••"
                   type="password"
+                  disabled={isSubmitting}
                   error={form.formState.errors.confirmPassword?.message}
                   {...field}
                 />
               )}
             />
-            <Button type="submit" className="w-full font-bold h-11 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-              Create Account
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full font-bold h-11 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              {isSubmitting ? "Creating account..." : "Create Account"}
             </Button>
           </form>
         </Form>
@@ -115,9 +126,11 @@ const SignupCard = () => {
       <CardFooter className="flex flex-col space-y-4">
         <Typography variant="muted" className="text-center w-full text-xs">
           Already have an account?{" "}
-          <Button variant="link" className="p-0 h-auto font-bold text-primary">
-            Login
-          </Button>
+          <Link to="/login">
+            <Button variant="link" className="p-0 h-auto font-bold text-primary">
+              Login
+            </Button>
+          </Link>
         </Typography>
       </CardFooter>
     </Card>

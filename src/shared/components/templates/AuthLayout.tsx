@@ -22,7 +22,7 @@ const AuthLayout: React.FC = () => {
               Shopsy
             </Typography>
           </Link>
-          
+
           <ThemeToggle />
         </div>
       </header>

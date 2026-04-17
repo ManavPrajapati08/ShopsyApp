@@ -13,6 +13,8 @@ import { Form, FormField } from "@/shared/components/atoms/form";
 import Button from "@/shared/components/atoms/button";
 import TextField from "../molecules/TextField";
 import Typography from "@/shared/components/atoms/Typography";
+import { useLogin } from "../hooks/useLogin/useLogin";
+import { Link } from "react-router-dom";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -22,6 +24,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginCard = () => {
+  const { login, isSubmitting } = useLogin();
+  
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,9 +34,8 @@ const LoginCard = () => {
     },
   });
 
-  const onSubmit = (values: LoginFormValues) => {
-    console.log("Login Values:", values);
-    // Handle login logic here
+  const onSubmit = async (values: LoginFormValues) => {
+    await login(values);
   };
 
   return (
@@ -56,6 +59,7 @@ const LoginCard = () => {
                   label="Email"
                   placeholder="name@example.com"
                   type="email"
+                  disabled={isSubmitting}
                   error={form.formState.errors.email?.message}
                   {...field}
                 />
@@ -70,6 +74,7 @@ const LoginCard = () => {
                     label="Password"
                     placeholder="••••••••"
                     type="password"
+                    disabled={isSubmitting}
                     error={form.formState.errors.password?.message}
                     {...field}
                   />
@@ -81,8 +86,12 @@ const LoginCard = () => {
                 </Button>
               </div>
             </div>
-            <Button type="submit" className="w-full font-bold h-11 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-              Login
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full font-bold h-11 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              {isSubmitting ? "Logging in..." : "Login"}
             </Button>
           </form>
         </Form>
@@ -90,9 +99,11 @@ const LoginCard = () => {
       <CardFooter className="flex flex-col space-y-4">
         <Typography variant="muted" className="text-center w-full text-xs">
           Don't have an account?{" "}
-          <Button variant="link" className="p-0 h-auto font-bold text-primary">
-            Sign up
-          </Button>
+          <Link to="/signup">
+            <Button variant="link" className="p-0 h-auto font-bold text-primary">
+              Sign up
+            </Button>
+          </Link>
         </Typography>
       </CardFooter>
     </Card>
